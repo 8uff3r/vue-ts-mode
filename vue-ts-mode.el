@@ -111,10 +111,6 @@
    (treesit-font-lock-rules
 
     :language 'vue
-    :feature 'vue-definition
-    '(((tag_name) @vue-ts-mode-template-tag-face))
-
-    :language 'vue
     :feature 'vue-ref
     '((element (_ (attribute
                    (attribute_name)
@@ -125,9 +121,20 @@
                     @font-lock-variable-name-face)))))
 
     :language 'vue
+    :feature 'vue-attr
+    '((attribute_name) @font-lock-keyword-face)
+
+    :language 'vue
+    :feature 'vue-definition
+    '(((tag_name) @vue-ts-mode-template-tag-face))
+
+    :language 'vue
     :feature 'vue-directive
-    '((directive_name) @font-lock-keyword-face
-      (directive_argument) @font-lock-type-face)
+    '((element (_
+                (directive_attribute
+                 (directive_name) @font-lock-keyword-face
+                 (directive_argument) @font-lock-type-face))))
+
 
     :language 'vue
     :feature 'vue-bracket
@@ -135,17 +142,19 @@
 
     :language 'vue
     :feature 'vue-string
-    '((quoted_attribute_value) @font-lock-string-face
-      (attribute_name) @font-lock-keyword-face))))
+    '((quoted_attribute_value) @font-lock-string-face))))
 
 (defvar vue-ts-mode--range-settings
   (treesit-range-rules
    :embed 'typescript
    :host 'vue
-   '(
-     (interpolation (raw_text) @capture)
+   '((interpolation (raw_text) @capture)
      (script_element (raw_text) @capture)
-     (directive_attribute (quoted_attribute_value (attribute_value) @capture)))
+     (element (_
+               (directive_attribute
+                (quoted_attribute_value
+                 (attribute_value)
+                 @capture)))))
 
    :embed 'css
    :host 'vue
@@ -189,7 +198,7 @@ Return nil if there is no name or if NODE is not a defun node."
            return (treesit-parser-language parser))))
     (or language-in-range 'vue)))
 ;;;###autoload
-(define-derived-mode vue-ts-mode html-mode "Vue-ts"
+(define-derived-mode vue-ts-mode prog-mode "Vue-ts"
   "Major mode for editing Vue templates, powered by tree-sitter."
   :group 'vue
   ;; :syntax-table html-mode-syntax-table
@@ -216,7 +225,7 @@ Return nil if there is no name or if NODE is not a defun node."
   ;; Font locking
   (setq-local treesit-font-lock-settings vue-font-lock-settings)
   (setq-local treesit-font-lock-feature-list
-              '((vue-definition css-selector
+              '((vue-attr vue-definition css-selector
                                css-comment css-query css-keyword typescript-comment
                                typescript-declaration)
                 (vue-ref vue-string vue-directive css-property css-constant css-string typescript-keyword
