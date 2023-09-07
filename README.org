@@ -17,9 +17,9 @@ Then, in =init.el=:
 #+end_src
 
 ** Setup
-The first time you open a =.vue= file, or =(require 'astro-ts-mode)=, you'll likely get a warning such as the following:
+The first time you open a =.vue= file, or =(require 'vue-ts-mode)=, you'll likely get a warning such as the following:
 
-: Cannot activate tree-sitter, because language grammar for astro is unavailable
+: Cannot activate tree-sitter, because language grammar for vue is unavailable
 
 Because this major mode is powered by [[https://tree-sitter.github.io/tree-sitter/][Tree-sitter]], it depends on an external grammar to provide a syntax tree for Vue components. To set it up, you'll need to set =treesit-language-source-alist= to point to the correct repositories for each language. At a minimum, you'll need to specify =vue=, =typescript= and =css=, like so:
 #+begin_src emacs-lisp
