@@ -1,0 +1,41 @@
+* Vue-ts-mode
+A major mode for editing [[https://vuejs.org/][Vue]] components. Requires Emacs 29.1.
+
+** Installation
+Clone this repo anywhere you want, probably somewhere in =~/.emacs.d= . Then, add the directory to your =load-path=.
+
+For example:
+#+begin_example
+  cd ~/.emacs.d
+  git clone https://github.com/8uff3r/vue-ts-mode.git
+#+end_example
+
+Then, in =init.el=:
+#+begin_src emacs-lisp
+  (add-to-list 'load-path (concat user-emacs-directory "vue-ts-mode"))
+  (require 'vue-ts-mode)
+#+end_src
+
+** Setup
+The first time you open a =.vue= file, or =(require 'astro-ts-mode)=, you'll likely get a warning such as the following:
+
+: Cannot activate tree-sitter, because language grammar for astro is unavailable
+
+Because this major mode is powered by [[https://tree-sitter.github.io/tree-sitter/][Tree-sitter]], it depends on an external grammar to provide a syntax tree for Vue components. To set it up, you'll need to set =treesit-language-source-alist= to point to the correct repositories for each language. At a minimum, you'll need to specify =vue=, =typescript= and =css=, like so:
+#+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+        '((vue "https://github.com/ikatyang/tree-sitter-vue")
+          (css "https://github.com/tree-sitter/tree-sitter-css")
+          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")))
+#+end_src
+
+Once that's been setup, you'll need to run =treesit-install-language-grammar= once for each language in the list. You can do this interactively (=M-x=), or by evaluating this snippet:
+#+begin_src emacs-lisp
+  (mapc #'treesit-install-language-grammar '(vue css typescript))
+#+end_src
+
+Make sure you have a working C compiler as =cc= in your PATH, since this needs to compile the grammars.
+
+** Credits
+- [[ https://github.com/ikatyang/ ][ikatyang]] for [[https://github.com/ikatyang/tree-sitter-vue][tree-sitter-vue]], the Tree-sitter grammar this major mode is built on
+- [[https://github.com/virchau13][Ruby Iris Juric]] for [[https://github.com/Sorixelle/astro-ts-mode][astro-ts-mode]], which this is based on, even this Readme :)
