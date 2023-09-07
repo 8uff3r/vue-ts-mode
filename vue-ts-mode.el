@@ -115,6 +115,16 @@
     '(((tag_name) @vue-ts-mode-template-tag-face))
 
     :language 'vue
+    :feature 'vue-ref
+    '((element (_ (attribute
+                   (attribute_name)
+                   @font-lock-type-face
+                   (:equal @font-lock-type-face "ref")
+                   (quoted_attribute_value
+                    (attribute_value)
+                    @font-lock-variable-name-face)))))
+
+    :language 'vue
     :feature 'vue-directive
     '((directive_name) @font-lock-keyword-face
       (directive_argument) @font-lock-type-face)
@@ -209,7 +219,7 @@ Return nil if there is no name or if NODE is not a defun node."
               '((vue-definition css-selector
                                css-comment css-query css-keyword typescript-comment
                                typescript-declaration)
-                (vue-string vue-directive css-property css-constant css-string typescript-keyword
+                (vue-ref vue-string vue-directive css-property css-constant css-string typescript-keyword
                               typescript-string typescript-escape-sequence)
                 (css-error css-variable css-function css-operator typescript-constant
                            typescript-expression typescript-identifier typescript-number typescript-pattern
@@ -233,7 +243,7 @@ Return nil if there is no name or if NODE is not a defun node."
  #'vue-ts-mode--advice-for-treesit-buffer-root-node)
 
 (advice-add
- #'treesit--m
+ #'treesit--merge-ranges
  :before-while
  #'vue-ts-mode--advice-for-treesit--merge-ranges)
 
