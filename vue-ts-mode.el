@@ -1,8 +1,8 @@
 ;;; vue-ts-mode.el --- Major mode for editing Vue templates  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2023  Ruby Iris Juric
+;; Copyright (C) 2023 8uff3r
 
-;; Author: Ruby Iris Juric <ruby@srxl.me>
+;; Author: 8uff3r <8uff3r@gmail.com>
 ;; Homepage: https://github.com/8uff3r/vue-ts-mode
 ;; Version: 1.0.0
 ;; Package-Requires: ((emacs "29.1"))
@@ -220,7 +220,7 @@ Return nil if there is no name or if NODE is not a defun node."
     (error "Tree-sitter grammar for CSS isn't available"))
 
   (unless (treesit-ready-p 'tsx)
-    (error "Tree-sitter grammar for Typescript/TYPESCRIPT isn't available"))
+    (error "Tree-sitter grammar for Typescript/tsx isn't available"))
 
   (when (treesit-ready-p 'tsx)
     (treesit-parser-create 'vue)
