@@ -69,6 +69,11 @@
     (tsx . ,(alist-get 'tsx (typescript-ts-mode--indent-rules 'tsx))))
   "Tree-sitter indentation rules for `vue-ts-mode'.")
 
+;; font-lock rules
+(defface vue-ts-mode-template-tag-face
+    '((t  :foreground "#ff757f"))
+  "Face for template tags."
+  :group 'vue-ts-mode-faces)
 
 (defface vue-ts-mode-template-tag-bracket-face
     '((t :foreground "#86e1fc"))
@@ -84,22 +89,16 @@
                   (nth 3 setting)))
           settings))
 
-(defvar ts-fontlock-wprefix
-  (vue-ts-mode--prefix-font-lock-features
-   "tsx"
-   (typescript-ts-mode--font-lock-settings 'tsx)))
-
-(defvar css-fontlock-wprefix
-  (vue-ts-mode--prefix-font-lock-features
-   "css" css--treesit-settings))
 
 (defvar vue-font-lock-settings
   (append
    (vue-ts-mode--prefix-font-lock-features
     "tsx"
     (typescript-ts-mode--font-lock-settings 'tsx))
+
    (vue-ts-mode--prefix-font-lock-features
     "css" css--treesit-settings)
+
    (treesit-font-lock-rules
 
     :language 'vue
@@ -119,8 +118,6 @@
              @font-lock-type-face
              (:match "\\`\\(v-if\\|v-for\\|v-else\\)\\'"
                      @font-lock-type-face)))))
-      ;; (_ (_ (directive_attribute
-      ;;        (directive_name) @font-lock-type-face (:equal @font-lock-type-face "v-else"))))
 
 
     :language 'vue
@@ -129,7 +126,7 @@
 
     :language 'vue
     :feature 'vue-definition
-    '(((tag_name) @vue-ts-mode-template-tag-face))
+    '((tag_name) @vue-ts-mode-template-tag-face)
 
     :language 'vue
     :feature 'vue-directive
@@ -137,7 +134,6 @@
           (directive_attribute
            (directive_name) @font-lock-keyword-face
            (directive_argument) @font-lock-type-face))))
-
 
     :language 'vue
     :feature 'vue-bracket
@@ -152,18 +148,13 @@
 
    :embed 'tsx
    :host 'vue
-   '((interpolation (raw_text) @capture)
-     (script_element (raw_text) @capture)
-     (element (_
-               (directive_attribute
-                (quoted_attribute_value
-                 (attribute_value)
-                 @capture))))
-     (template_element (_
-                        (directive_attribute
-                         (quoted_attribute_value
-                          (attribute_value)
-                          @capture)))))
+   '(((script_element (raw_text) @capture))
+
+     (interpolation (raw_text) @capture)
+
+     (directive_attribute
+      (quoted_attribute_value
+       (attribute_value) @capture)))
 
    :embed 'css
    :host 'vue
@@ -220,7 +211,7 @@ Return nil if there is no name or if NODE is not a defun node."
     (error "Tree-sitter grammar for CSS isn't available"))
 
   (unless (treesit-ready-p 'tsx)
-    (error "Tree-sitter grammar for Typescript/tsx isn't available"))
+    (error "Tree-sitter grammar for Typescript/TYPESCRIPT isn't available"))
 
   (when (treesit-ready-p 'tsx)
     (treesit-parser-create 'vue)
@@ -237,18 +228,22 @@ Return nil if there is no name or if NODE is not a defun node."
     (setq-local treesit-font-lock-settings vue-font-lock-settings)
     (setq-local treesit-font-lock-feature-list
                 '((vue-attr vue-definition css-selector
-                   css-comment css-query css-keyword tsx-comment
-                   tsx-declaration)
+                   css-comment css-query css-keyword
+                   tsx-comment tsx-declaration)
                   (vue-ref vue-string vue-directive css-property css-constant
-                           css-string tsx-keyword
+                           css-string
+                           tsx-keyword
                            tsx-string tsx-escape-sequence)
                   (vue-sp-dir css-error css-variable css-function
-                              css-operator tsx-constant
+                              css-operator
+                              tsx-constant
                               tsx-expression tsx-identifier
                               tsx-number tsx-pattern
                               tsx-property)
-                  (tsx-bracket vue-bracket css-bracket tsx-function
-                                      tsx-delimiter)))
+                  (vue-bracket css-bracket
+                                tsx-function
+                                tsx-bracket
+                                tsx-delimiter)))
 
 
     ;; Embedded languages
