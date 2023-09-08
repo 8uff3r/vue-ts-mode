@@ -117,7 +117,7 @@
     '((_ (_ (directive_attribute
              (directive_name)
              @font-lock-type-face
-             (:match "\\`\\(v-if\\|v-for\\|v-else\\)\\'"
+             (:match "\\`\\(v-if\\|v-for\\|v-model\\|v-else\\)\\'"
                      @font-lock-type-face)))))
 
 
