@@ -102,6 +102,7 @@
    (treesit-font-lock-rules
 
     :language 'vue
+    :override t
     :feature 'vue-ref
     '((element (_ (attribute
                    (attribute_name)
@@ -122,7 +123,7 @@
 
     :language 'vue
     :feature 'vue-attr
-    '((attribute_name) @font-lock-keyword-face)
+    '((attribute_name) @font-lock-property-name-face)
 
     :language 'vue
     :feature 'vue-definition
@@ -239,6 +240,7 @@ Return nil if there is no name or if NODE is not a defun node."
                               tsx-constant
                               tsx-expression tsx-identifier
                               tsx-number tsx-pattern
+                              tsx-operator
                               tsx-property)
                   (vue-bracket css-bracket
                                 tsx-function
