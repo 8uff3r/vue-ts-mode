@@ -1,4 +1,4 @@
-;;; vue-ts-mode.el --- Majorss mode for editing Vue templates  -*- lexical-binding: t; -*-
+;;; vue-ts-mode.el --- Major mode for editing Vue templates  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023  Ruby Iris Juric
 
@@ -54,8 +54,6 @@
 
 (defvar vue-ts-mode--indent-rules
   `((vue
-     ((parent-is "fragment") column-0 0)
-     ((node-is "frontmatter") column-0 0)
      ((node-is "/>") parent-bol 0)
      ((node-is ">") parent-bol 0)
      ((node-is "end_tag") parent-bol 0)
@@ -68,15 +66,9 @@
      ((parent-is "self_closing_tag") parent-bol vue-ts-mode-indent-offset))
     (css . ,(append (alist-get 'css css--treesit-indent-rules)
                     '(((parent-is "stylesheet") parent-bol 0))))
-    (typescript . ,(alist-get 'typescript (typescript-ts-mode--indent-rules 'typescript))))
+    (tsx . ,(alist-get 'tsx (typescript-ts-mode--indent-rules 'tsx))))
   "Tree-sitter indentation rules for `vue-ts-mode'.")
 
-
-;; font-lock rules
-(defface vue-ts-mode-template-tag-face
-    '((t  :foreground "#ff757f"))
-  "Face for template tags."
-  :group 'vue-ts-mode-faces)
 
 (defface vue-ts-mode-template-tag-bracket-face
     '((t :foreground "#86e1fc"))
@@ -94,8 +86,8 @@
 
 (defvar ts-fontlock-wprefix
   (vue-ts-mode--prefix-font-lock-features
-   "typescript"
-   (typescript-ts-mode--font-lock-settings 'typescript)))
+   "tsx"
+   (typescript-ts-mode--font-lock-settings 'tsx)))
 
 (defvar css-fontlock-wprefix
   (vue-ts-mode--prefix-font-lock-features
@@ -104,8 +96,8 @@
 (defvar vue-font-lock-settings
   (append
    (vue-ts-mode--prefix-font-lock-features
-    "typescript"
-    (typescript-ts-mode--font-lock-settings 'typescript))
+    "tsx"
+    (typescript-ts-mode--font-lock-settings 'tsx))
    (vue-ts-mode--prefix-font-lock-features
     "css" css--treesit-settings)
    (treesit-font-lock-rules
@@ -121,6 +113,17 @@
                     @font-lock-variable-name-face)))))
 
     :language 'vue
+    :feature 'vue-sp-dir
+    '((_ (_ (directive_attribute
+             (directive_name)
+             @font-lock-type-face
+             (:match "\\`\\(v-if\\|v-for\\|v-else\\)\\'"
+                     @font-lock-type-face)))))
+      ;; (_ (_ (directive_attribute
+      ;;        (directive_name) @font-lock-type-face (:equal @font-lock-type-face "v-else"))))
+
+
+    :language 'vue
     :feature 'vue-attr
     '((attribute_name) @font-lock-keyword-face)
 
@@ -130,10 +133,10 @@
 
     :language 'vue
     :feature 'vue-directive
-    '((element (_
-                (directive_attribute
-                 (directive_name) @font-lock-keyword-face
-                 (directive_argument) @font-lock-type-face))))
+    '((_ (_
+          (directive_attribute
+           (directive_name) @font-lock-keyword-face
+           (directive_argument) @font-lock-type-face))))
 
 
     :language 'vue
@@ -146,7 +149,8 @@
 
 (defvar vue-ts-mode--range-settings
   (treesit-range-rules
-   :embed 'typescript
+
+   :embed 'tsx
    :host 'vue
    '((interpolation (raw_text) @capture)
      (script_element (raw_text) @capture)
@@ -154,7 +158,12 @@
                (directive_attribute
                 (quoted_attribute_value
                  (attribute_value)
-                 @capture)))))
+                 @capture))))
+     (template_element (_
+                        (directive_attribute
+                         (quoted_attribute_value
+                          (attribute_value)
+                          @capture)))))
 
    :embed 'css
    :host 'vue
@@ -171,6 +180,7 @@ instead always returns t."
     t
     (treesit-parser-included-ranges
      (treesit-parser-create
+
       (or lang (treesit-parser-language (car (treesit-parser-list))))))))
 
 (defun vue-ts-mode--advice-for-treesit--merge-ranges (_ new-ranges _ _)
@@ -209,39 +219,43 @@ Return nil if there is no name or if NODE is not a defun node."
   (unless (treesit-ready-p 'css)
     (error "Tree-sitter grammar for CSS isn't available"))
 
-  (unless (treesit-ready-p 'typescript)
+  (unless (treesit-ready-p 'tsx)
     (error "Tree-sitter grammar for Typescript/TYPESCRIPT isn't available"))
 
-  (treesit-parser-create 'vue)
+  (when (treesit-ready-p 'tsx)
+    (treesit-parser-create 'vue)
 
-  ;; Comments and text content
-  (setq-local treesit-text-type-regexp
-              (regexp-opt '("comment" "text")))
+    ;; Comments and text content
+    (setq-local treesit-text-type-regexp
+                (regexp-opt '("comment" "text")))
 
-  ;; Indentation rules
-  (setq-local treesit-simple-indent-rules vue-ts-mode--indent-rules
-              css-indent-offset vue-ts-mode-indent-offset)
+    ;; Indentation rules
+    (setq-local treesit-simple-indent-rules vue-ts-mode--indent-rules
+                css-indent-offset vue-ts-mode-indent-offset)
 
-  ;; Font locking
-  (setq-local treesit-font-lock-settings vue-font-lock-settings)
-  (setq-local treesit-font-lock-feature-list
-              '((vue-attr vue-definition css-selector
-                               css-comment css-query css-keyword typescript-comment
-                               typescript-declaration)
-                (vue-ref vue-string vue-directive css-property css-constant css-string typescript-keyword
-                              typescript-string typescript-escape-sequence)
-                (css-error css-variable css-function css-operator typescript-constant
-                           typescript-expression typescript-identifier typescript-number typescript-pattern
-                           typescript-property)
-                (vue-bracket css-bracket typescript-function typescript-bracket
-                               typescript-delimiter)))
+    ;; Font locking
+    (setq-local treesit-font-lock-settings vue-font-lock-settings)
+    (setq-local treesit-font-lock-feature-list
+                '((vue-attr vue-definition css-selector
+                   css-comment css-query css-keyword tsx-comment
+                   tsx-declaration)
+                  (vue-ref vue-string vue-directive css-property css-constant
+                           css-string tsx-keyword
+                           tsx-string tsx-escape-sequence)
+                  (vue-sp-dir css-error css-variable css-function
+                              css-operator tsx-constant
+                              tsx-expression tsx-identifier
+                              tsx-number tsx-pattern
+                              tsx-property)
+                  (tsx-bracket vue-bracket css-bracket tsx-function
+                                      tsx-delimiter)))
 
 
-  ;; Embedded languages
-  (setq-local treesit-range-settings vue-ts-mode--range-settings)
-  (setq-local treesit-language-at-point-function
-              #'vue-ts-mode--treesit-language-at-point)
-  (treesit-major-mode-setup))
+    ;; Embedded languages
+    (setq-local treesit-range-settings vue-ts-mode--range-settings)
+    (setq-local treesit-language-at-point-function
+                #'vue-ts-mode--treesit-language-at-point)
+    (treesit-major-mode-setup)))
 
 (if (treesit-ready-p 'vue)
     (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-ts-mode)))
