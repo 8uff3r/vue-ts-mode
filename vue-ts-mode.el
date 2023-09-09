@@ -70,11 +70,6 @@
   "Tree-sitter indentation rules for `vue-ts-mode'.")
 
 ;; font-lock rules
-(defface vue-ts-mode-template-tag-face
-    '((t  :foreground "#ff757f"))
-  "Face for template tags."
-  :group 'vue-ts-mode-faces)
-
 (defface vue-ts-mode-template-tag-bracket-face
     '((t :foreground "#86e1fc"))
   "Face for html tags angle brackets (<, > and />)."
@@ -127,7 +122,7 @@
 
     :language 'vue
     :feature 'vue-definition
-    '((tag_name) @vue-ts-mode-template-tag-face)
+    '((tag_name) @font-lock-function-name-face)
 
     :language 'vue
     :feature 'vue-directive
