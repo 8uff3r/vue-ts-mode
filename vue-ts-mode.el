@@ -144,7 +144,7 @@
 
    :embed 'tsx
    :host 'vue
-   '(((script_element (raw_text) @capture))
+   '((script_element (raw_text) @capture)
 
      (interpolation (raw_text) @capture)
 
@@ -207,7 +207,7 @@ Return nil if there is no name or if NODE is not a defun node."
     (error "Tree-sitter grammar for CSS isn't available"))
 
   (unless (treesit-ready-p 'tsx)
-    (error "Tree-sitter grammar for Typescript/TYPESCRIPT isn't available"))
+    (error "Tree-sitter grammar for Typescript/TSX isn't available"))
 
   (when (treesit-ready-p 'tsx)
     (treesit-parser-create 'vue)
