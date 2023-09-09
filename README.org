@@ -26,7 +26,7 @@ Because this major mode is powered by [[https://tree-sitter.github.io/tree-sitte
   (setq treesit-language-source-alist
         '((vue "https://github.com/ikatyang/tree-sitter-vue")
           (css "https://github.com/tree-sitter/tree-sitter-css")
-          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")))
+          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")))
 #+end_src
 
 Once that's been setup, you'll need to run =treesit-install-language-grammar= once for each language in the list. You can do this interactively (=M-x=), or by evaluating this snippet:
