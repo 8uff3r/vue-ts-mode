@@ -112,7 +112,7 @@
     '((_ (_ (directive_attribute
              (directive_name)
              @font-lock-type-face
-             (:match "\\`\\(v-if\\|v-for\\|v-model\\|v-else\\)\\'"
+             (:match "\\`\\(v-if\\|v-for\\|v-model\\|v-else\\|v-else-if\\)\\'"
                      @font-lock-type-face)))))
 
 
@@ -137,7 +137,7 @@
 
     :language 'vue
     :feature 'vue-string
-    '((quoted_attribute_value) @font-lock-string-face))))
+    '((attribute (quoted_attribute_value) @font-lock-string-face)))))
 
 (defvar vue-ts-mode--range-settings
   (treesit-range-rules
