@@ -111,6 +111,7 @@
                     @font-lock-variable-name-face)))))
 
     :language 'vue
+    :override t
     :feature 'vue-sp-dir
     '((_ (_ (directive_attribute
              (directive_name)
@@ -123,10 +124,12 @@
     '((attribute_name) @font-lock-property-name-face)
 
     :language 'vue
+    :override t
     :feature 'vue-definition
     '((tag_name) @font-lock-function-name-face)
 
     :language 'vue
+    :override t
     :feature 'vue-directive
     '((_ (_
           (directive_attribute
@@ -150,9 +153,9 @@
 
      (interpolation (raw_text) @capture)
 
-     (directive_attribute
-      (quoted_attribute_value
-       (attribute_value) @capture)))
+     (element (_ (directive_attribute
+                  (quoted_attribute_value
+                   (attribute_value) @capture)))))
 
    :embed 'css
    :host 'vue
