@@ -95,6 +95,9 @@
     "css" css--treesit-settings)
 
    (treesit-font-lock-rules
+    :language 'tsx
+    :feature 'tsx-custom-property
+    '((member_expression property: (property_identifier) @font-lock-property-name-face))
 
     :language 'vue
     :override t
@@ -114,7 +117,6 @@
              @font-lock-type-face
              (:match "\\`\\(v-if\\|v-for\\|v-model\\|v-else\\|v-else-if\\)\\'"
                      @font-lock-type-face)))))
-
 
     :language 'vue
     :feature 'vue-attr
@@ -240,8 +242,8 @@ Return nil if there is no name or if NODE is not a defun node."
                   (vue-bracket css-bracket
                                 tsx-function
                                 tsx-bracket
-                                tsx-delimiter)))
-
+                                tsx-delimiter
+                                tsx-custom-property)))
 
     ;; Embedded languages
     (setq-local treesit-range-settings vue-ts-mode--range-settings)
