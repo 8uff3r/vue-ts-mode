@@ -97,7 +97,8 @@
    (treesit-font-lock-rules
     :language 'tsx
     :feature 'tsx-custom-property
-    '((member_expression property: (property_identifier) @font-lock-property-name-face))
+    '((member_expression property: (property_identifier) @font-lock-property-name-face)
+      function: ( member_expression property: (property_identifier) @font-lock-function-call-face))
 
     :language 'vue
     :override t
@@ -137,6 +138,7 @@
            (directive_argument) @font-lock-type-face))))
 
     :language 'vue
+    :override t
     :feature 'vue-bracket
     '(([ "{{" "}}" "<" ">" "</" "/>"]) @vue-ts-mode-template-tag-bracket-face)
 
@@ -200,7 +202,7 @@ Return nil if there is no name or if NODE is not a defun node."
            return (treesit-parser-language parser))))
     (or language-in-range 'vue)))
 ;;;###autoload
-(define-derived-mode vue-ts-mode prog-mode "Vue-ts"
+(define-derived-mode vue-ts-mode html-mode "Vue-ts"
   "Major mode for editing Vue templates, powered by tree-sitter."
   :group 'vue
   ;; :syntax-table html-mode-syntax-table
