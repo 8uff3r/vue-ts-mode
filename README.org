@@ -1,10 +1,10 @@
 * Vue-ts-mode
 A major mode for editing [[https://vuejs.org/][Vue]] components. Requires Emacs 29.1.
 
+[[./screenshot.png]]
+
 ** Installation
 Clone this repo anywhere you want, probably somewhere in =~/.emacs.d= . Then, add the directory to your =load-path=.
-
-[[./screenshot.png]]
 
 For example:
 #+begin_example
