@@ -97,8 +97,7 @@
    (treesit-font-lock-rules
     :language 'tsx
     :feature 'tsx-custom-property
-    '((member_expression property: (property_identifier) @font-lock-property-name-face)
-      function: ( member_expression property: (property_identifier) @font-lock-function-call-face))
+    '((member_expression property: (property_identifier) @font-lock-property-name-face))
 
     :language 'vue
     :override t
