@@ -154,9 +154,9 @@
 
      (interpolation (raw_text) @capture)
 
-     (element (_ (directive_attribute
-                  (quoted_attribute_value
-                   (attribute_value) @capture)))))
+     (directive_attribute
+      (quoted_attribute_value
+       (attribute_value) @capture)))
 
    :embed 'css
    :host 'vue
