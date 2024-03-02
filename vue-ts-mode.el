@@ -66,12 +66,12 @@
      ((parent-is "self_closing_tag") parent-bol vue-ts-mode-indent-offset))
     (css . ,(append (alist-get 'css css--treesit-indent-rules)
                     '(((parent-is "stylesheet") parent-bol 0))))
-    (tsx . ,(alist-get 'tsx (typescript-ts-mode--indent-rules 'tsx))))
+    (typescript . ,(alist-get 'typescript (typescript-ts-mode--indent-rules 'typescript))))
   "Tree-sitter indentation rules for `vue-ts-mode'.")
 
 ;; font-lock rules
 (defface vue-ts-mode-template-tag-bracket-face
-    '((t :foreground "#86e1fc"))
+  '((t :foreground "#86e1fc"))
   "Face for html tags angle brackets (<, > and />)."
   :group 'vue-ts-mode-faces)
 
@@ -88,15 +88,15 @@
 (defvar vue-font-lock-settings
   (append
    (vue-ts-mode--prefix-font-lock-features
-    "tsx"
-    (typescript-ts-mode--font-lock-settings 'tsx))
+    "typescript"
+    (typescript-ts-mode--font-lock-settings 'typescript))
 
    (vue-ts-mode--prefix-font-lock-features
     "css" css--treesit-settings)
 
    (treesit-font-lock-rules
-    :language 'tsx
-    :feature 'tsx-custom-property
+    :language 'typescript
+    :feature 'typescript-custom-property
     '((member_expression property: (property_identifier) @font-lock-property-name-face))
 
     :language 'vue
@@ -148,13 +148,19 @@
 (defvar vue-ts-mode--range-settings
   (treesit-range-rules
 
-   :embed 'tsx
+   :embed 'typescript
    :host 'vue
-   '((script_element (raw_text) @capture)
+   '((script_element (raw_text) @capture))
 
-     (interpolation (raw_text) @capture)
+   :embed 'typescript
+   :host 'vue
+   :local 't
+   '((interpolation (raw_text) @capture))
 
-     (directive_attribute
+   :embed 'typescript
+   :host 'vue
+   :local 't
+   '((directive_attribute
       (quoted_attribute_value
        (attribute_value) @capture)))
 
@@ -170,7 +176,7 @@ If LANG is omitted, return ranges for the first language in the parser list.
 If `major-mode' is currently `vue-ts-mode', or if LANG is vue, this function
 instead always returns t."
   (if (or (eq lang 'vue) (not (eq major-mode 'vue-ts-mode)))
-    t
+      t
     (treesit-parser-included-ranges
      (treesit-parser-create
 
@@ -212,10 +218,10 @@ Return nil if there is no name or if NODE is not a defun node."
   (unless (treesit-ready-p 'css)
     (error "Tree-sitter grammar for CSS isn't available"))
 
-  (unless (treesit-ready-p 'tsx)
-    (error "Tree-sitter grammar for Typescript/TSX isn't available"))
+  (unless (treesit-ready-p 'typescript)
+    (error "Tree-sitter grammar for Typescript/TYPESCRIPT isn't available"))
 
-  (when (treesit-ready-p 'tsx)
+  (when (treesit-ready-p 'typescript)
     (treesit-parser-create 'vue)
 
     ;; Comments and text content
@@ -231,23 +237,23 @@ Return nil if there is no name or if NODE is not a defun node."
     (setq-local treesit-font-lock-feature-list
                 '((vue-attr vue-definition css-selector
                    css-comment css-query css-keyword
-                   tsx-comment tsx-declaration)
+                   typescript-comment typescript-declaration)
                   (vue-ref vue-string vue-directive css-property css-constant
                            css-string
-                           tsx-keyword
-                           tsx-string tsx-escape-sequence)
+                           typescript-keyword
+                           typescript-string typescript-escape-sequence)
                   (vue-sp-dir css-error css-variable css-function
                               css-operator
-                              tsx-constant
-                              tsx-expression tsx-identifier
-                              tsx-number tsx-pattern
-                              tsx-operator
-                              tsx-property)
+                              typescript-constant
+                              typescript-expression typescript-identifier
+                              typescript-number typescript-pattern
+                              typescript-operator
+                              typescript-property)
                   (vue-bracket css-bracket
-                                tsx-function
-                                tsx-bracket
-                                tsx-delimiter
-                                tsx-custom-property)))
+                               typescript-function
+                               typescript-bracket
+                               typescript-delimiter
+                               typescript-custom-property)))
 
     ;; Embedded languages
     (setq-local treesit-range-settings vue-ts-mode--range-settings)
