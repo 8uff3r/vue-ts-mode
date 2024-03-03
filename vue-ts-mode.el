@@ -95,10 +95,6 @@
     "css" css--treesit-settings)
 
    (treesit-font-lock-rules
-    :language 'typescript
-    :feature 'typescript-custom-property
-    '((member_expression property: (property_identifier) @font-lock-property-name-face))
-
     :language 'vue
     :override t
     :feature 'vue-ref
@@ -143,7 +139,26 @@
 
     :language 'vue
     :feature 'vue-string
-    '((attribute (quoted_attribute_value) @font-lock-string-face)))))
+    '((attribute (quoted_attribute_value) @font-lock-string-face))
+
+    :language 'typescript
+    :override t
+    :feature 'typescript-custom-property
+    '(((property_identifier) @font-lock-property-name-face))
+
+    :language 'typescript
+    :override t
+    :feature 'typescript-custom-variable
+    '(((identifier) @font-lock-variable-name-face))
+
+    :language 'typescript
+    :override 't
+    :feature 'typescript-custom-function
+    '((call_expression
+       function:
+       [(identifier) @font-lock-function-call-face
+        (member_expression
+         property: (property_identifier) @font-lock-function-call-face)])))))
 
 (defvar vue-ts-mode--range-settings
   (treesit-range-rules
@@ -161,8 +176,7 @@
    :host 'vue
    :local 't
    '((directive_attribute
-      (quoted_attribute_value
-       (attribute_value) @capture)))
+      (quoted_attribute_value (attribute_value) @capture)))
 
    :embed 'css
    :host 'vue
@@ -207,7 +221,7 @@ Return nil if there is no name or if NODE is not a defun node."
            return (treesit-parser-language parser))))
     (or language-in-range 'vue)))
 ;;;###autoload
-(define-derived-mode vue-ts-mode html-mode "Vue-ts"
+(define-derived-mode vue-ts-mode prog-mode "Vue-ts"
   "Major mode for editing Vue templates, powered by tree-sitter."
   :group 'vue
   ;; :syntax-table html-mode-syntax-table
@@ -253,6 +267,8 @@ Return nil if there is no name or if NODE is not a defun node."
                                typescript-function
                                typescript-bracket
                                typescript-delimiter
+                               typescript-custom-function
+                               typescript-custom-variable
                                typescript-custom-property)))
 
     ;; Embedded languages
