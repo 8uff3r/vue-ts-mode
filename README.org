@@ -1,5 +1,5 @@
 * Vue-ts-mode
-A major mode for editing [[https://vuejs.org/][Vue]] components. Requires Emacs 29.1.
+A major mode for editing [[https://vuejs.org/][Vue]] components. Requires Emacs 30.
 
 [[./screenshot.png]]
 

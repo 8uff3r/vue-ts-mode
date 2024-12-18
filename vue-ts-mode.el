@@ -5,7 +5,7 @@
 ;; Author: 8uff3r <8uff3r@gmail.com>
 ;; Homepage: https://github.com/8uff3r/vue-ts-mode
 ;; Version: 1.0.0
-;; Package-Requires: ((emacs "29.1"))
+;; Package-Requires: ((emacs "30"))
 ;; Keywords: languages
 
 
