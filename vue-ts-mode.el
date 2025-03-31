@@ -237,6 +237,8 @@ Return nil if there is no name or if NODE is not a defun node."
 
   (when (treesit-ready-p 'typescript)
     (treesit-parser-create 'vue)
+    (treesit-parser-create 'typescript)
+    (treesit-parser-create 'css)
 
     ;; Comments and text content
     (setq-local treesit-text-type-regexp
