@@ -220,6 +220,25 @@ Return nil if there is no name or if NODE is not a defun node."
            if range
            return (treesit-parser-language parser))))
     (or language-in-range 'vue)))
+
+(defun vue-ts-mode--comment-for-language-at-point ()
+  "Return the comment syntax for language at point."
+  (let ((lang (vue-ts-mode--treesit-language-at-point (point))))
+    (cond
+     ((equal lang 'vue) `(:start "<!-- " :start-skip "<!--[ \t]*"   :end " -->" :end-skip "[ \t]*--[ \t\n]*>"))
+     ((equal lang 'typescript) `(:start "// " :start-skip "\\(?://+\\|/\\*+\\)\\s-*" :end "" :end-skip "\\s-*\\(\\s>\\|\\*+/\\)")) 
+     ((equal lang 'css) `(:start "/*" :start-skip "/\\*+[ \t]*" :end "*/" :end-skip "[ \t]*\\*+/")))))
+
+(defun vue-ts-mode--advice-for-comment-fns (fn &rest args)
+  (if (equal major-mode 'vue-ts-mode)
+      (let* ((comment-vars (vue-ts-mode--comment-for-language-at-point))
+             (comment-start (plist-get comment-vars :start))
+             (comment-start-skip (plist-get comment-vars :start-skip))
+             (comment-end (plist-get comment-vars :end))
+             (comment-end-skip (plist-get comment-vars :end-skip)))
+        (apply fn args))
+    (apply fn args)))
+
 ;;;###autoload
 (define-derived-mode vue-ts-mode prog-mode "Vue-ts"
   "Major mode for editing Vue templates, powered by tree-sitter."
@@ -291,6 +310,11 @@ Return nil if there is no name or if NODE is not a defun node."
  #'treesit--merge-ranges
  :before-while
  #'vue-ts-mode--advice-for-treesit--merge-ranges)
+
+(advice-add
+ #'comment-dwim
+ :around
+ #'vue-ts-mode--advice-for-comment-fns)
 
 (provide 'vue-ts-mode)
 ;;; vue-ts-mode.el ends here
