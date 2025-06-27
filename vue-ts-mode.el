@@ -59,6 +59,7 @@
      ((node-is "end_tag") parent-bol 0)
      ((parent-is "comment") prev-adaptive-prefix 0)
      ((parent-is "element") parent-bol vue-ts-mode-indent-offset)
+     ((parent-is "text") grand-parent vue-ts-mode-indent-offset)
      ((parent-is "script_element") parent-bol 0)
      ((parent-is "style_element") parent-bol 0)
      ((parent-is "template_element") parent-bol vue-ts-mode-indent-offset)
