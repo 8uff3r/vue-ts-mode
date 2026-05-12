@@ -79,14 +79,15 @@
 (defun vue-ts-mode--prefix-font-lock-features (prefix settings)
   "Prefix with PREFIX the font lock features in SETTINGS."
   (mapcar (lambda (setting)
-            (list (nth 0 setting)
-                  (nth 1 setting)
-                  (intern (format "%s-%s" prefix (nth 2 setting)))
-                  (nth 3 setting)))
+            (let ((copy (copy-sequence setting)))
+              (setcar (nthcdr 2 copy)
+                      (intern (format "%s-%s" prefix (nth 2 setting))))
+              copy))
           settings))
 
 
-(defvar vue-font-lock-settings
+(defun vue-ts-mode--font-lock-settings ()
+  "Return font-lock settings for `vue-ts-mode'."
   (append
    (vue-ts-mode--prefix-font-lock-features
     "typescript"
@@ -269,7 +270,7 @@ Return nil if there is no name or if NODE is not a defun node."
                 css-indent-offset vue-ts-mode-indent-offset)
 
     ;; Font locking
-    (setq-local treesit-font-lock-settings vue-font-lock-settings)
+    (setq-local treesit-font-lock-settings (vue-ts-mode--font-lock-settings))
     (setq-local treesit-font-lock-feature-list
                 '((vue-attr vue-definition css-selector
                    css-comment css-query css-keyword
@@ -297,6 +298,9 @@ Return nil if there is no name or if NODE is not a defun node."
     (setq-local treesit-range-settings vue-ts-mode--range-settings)
     (setq-local treesit-language-at-point-function
                 #'vue-ts-mode--treesit-language-at-point)
+
+    (setq-local treesit-primary-parser (treesit-parser-create 'vue))
+
     (treesit-major-mode-setup)))
 
 (if (treesit-ready-p 'vue)
